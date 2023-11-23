@@ -3,6 +3,10 @@ import os
 import argparse
 import random
 from fake_useragent import UserAgent
+import requests
+from bs4 import BeautifulSoup
+from typing import List
+from time import sleep
 
 # Функция для парсинга аргументов командной строки
 def parse_arguments():
@@ -30,3 +34,29 @@ def create_directories():
         logging.exception(f"Error creating folder: {e.args}")
 
 create_directories()
+
+# Функция для получения страницы и возврата объекта BeautifulSoup для парсинга
+def get_page(page: int, base_url: str = "https://irecommend.ru/content/fix-price-moskva") -> BeautifulSoup:
+    try:
+        url = f"{base_url}{page}"
+        sleep_time = random.uniform(1, 3)
+        sleep(sleep_time)
+        headers = {"User-Agent": generate_random_user_agent()}
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.content, "html.parser")
+        return soup
+    except requests.exceptions.RequestException as e:
+        logging.exception(f"Ошибка получения страницы: {e.args}")
+        return None
+    except Exception as e:
+        logging.exception(f"Необработанная ошибка: {e.args}")
+        return None
+
+# Функция для получения списка отзывов из объекта BeautifulSoup
+def get_list_of_reviews(soup: BeautifulSoup) -> List[BeautifulSoup]:
+    try:
+        reviews = soup.find('ul', class_="list-comments").find_all('li')
+        return reviews
+    except Exception as e:
+        logging.exception("Ошибка получения списка отзывов:", e)
