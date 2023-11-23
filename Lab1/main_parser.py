@@ -89,3 +89,29 @@ def status_review(review: BeautifulSoup) -> str:
             return '5'
     except Exception as e:
         logging.exception("Ошибка определения статуса отзыва:", e)
+
+# Функция для сохранения отзыва в файл в соответствующем каталоге
+def save_review_to_file(review_text: str, status_review: str, review_1: int, review_2: int, review_3: int, review_4: int, review_5: int, output_dir: str):
+    if status_review == "1":
+        folder_name = "1"
+        file_name = f"{review_1:04d}.txt"
+    elif status_review == "2":
+        folder_name = "2"
+        file_name = f"{review_2:04d}.txt"
+    elif status_review == "3":
+        folder_name = "3"
+        file_name = f"{review_3:04d}.txt"
+    elif status_review == "4":
+        folder_name = "4"
+        file_name = f"{review_4:04d}.txt"
+    elif status_review == "5":
+        folder_name = "5"
+        file_name = f"{review_5:04d}.txt"
+
+    file_path = os.path.join(output_dir, folder_name, file_name)
+
+    try:
+        with open(file_path, "w", encoding="utf-8") as file:
+            file.write(review_text)
+    except Exception as e:
+        logging.exception(f"Ошибка сохранения отзыва: {e}")
