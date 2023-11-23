@@ -60,3 +60,32 @@ def get_list_of_reviews(soup: BeautifulSoup) -> List[BeautifulSoup]:
         return reviews
     except Exception as e:
         logging.exception("Ошибка получения списка отзывов:", e)
+
+# Функция для извлечения текста из объекта отзыва BeautifulSoup
+def review_text(review: BeautifulSoup) -> str:
+    try:
+        text_element = review.find('div', class_="reviewTextSnippet")
+        if text_element is not None:
+            return text_element.get_text()
+        else:
+            return "Текст не найден в отзыве"
+    except Exception as e:
+        logging.exception("Ошибка получения текста отзыва:", e)
+
+# Функция для определения статуса отзыва на основе количества звезд
+def status_review(review: BeautifulSoup) -> str:
+    try:
+        stars = review.find_all(class_='on')
+        count = len(stars)
+        if count == 1:
+            return '1'
+        elif count == 2:
+            return '2'
+        elif count == 3:
+            return '3'
+        elif count == 4:
+            return '4'
+        elif count == 5:
+            return '5'
+    except Exception as e:
+        logging.exception("Ошибка определения статуса отзыва:", e)
