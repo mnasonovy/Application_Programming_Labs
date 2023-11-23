@@ -115,3 +115,40 @@ def save_review_to_file(review_text: str, status_review: str, review_1: int, rev
             file.write(review_text)
     except Exception as e:
         logging.exception(f"Ошибка сохранения отзыва: {e}")
+
+if __name__ == "__main__":
+    args = parse_arguments()
+    output_dir = args.output_dir
+    base_url = args.base_url
+    pages = args.pages
+
+    number = 0
+    review_1 = 1
+    review_2 = 1
+    review_3 = 1
+    review_4 = 1
+    review_5 = 1
+
+    for page in range(1, pages + 1):
+        reviews = get_list_of_reviews(get_page(page, base_url))
+        if reviews:
+            for review in reviews:
+                text = review_text(review)
+                status = status_review(review)
+                save_review_to_file(text, status, review_1, review_2, review_3, review_4, review_5, output_dir)
+                if status == '1':
+                    review_1 += 1
+                    number += 1
+                elif status == '2':
+                    review_2 += 1
+                    number += 1
+                elif status == '3':
+                    review_3 += 1
+                    number += 1
+                elif status == '4':
+                    review_4 += 1
+                    number += 1
+                elif status == '5':
+                    review_5 += 1
+                    number += 1
+            print(number, review_1, review_2, review_3, review_4, review_5)
