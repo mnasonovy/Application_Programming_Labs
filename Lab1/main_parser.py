@@ -1,6 +1,8 @@
 import logging
 import os
 import argparse
+import random
+from fake_useragent import UserAgent
 
 # Функция для парсинга аргументов командной строки
 def parse_arguments():
@@ -11,3 +13,20 @@ def parse_arguments():
     return parser.parse_args()
 
 logging.basicConfig(level=logging.INFO)
+
+# Функция для генерации случайного user-agent
+def generate_random_user_agent() -> str:
+    ua = UserAgent()
+    return ua.random
+
+# Функция для создания каталогов, если они не существуют
+def create_directories():
+    try:
+        for folder_name in ["1", "2", "3", "4", "5"]:
+            folder_path = os.path.join("dataset", folder_name)
+            if not os.path.exists(folder_path):
+                os.makedirs(folder_path)
+    except Exception as e:
+        logging.exception(f"Error creating folder: {e.args}")
+
+create_directories()
