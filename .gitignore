@@ -1,2 +1,4 @@
+/_pycache_
 dataset
-Lab2/annotation.csv
+dataset_copy
+Lab2/__pycache__/create_annotation.cpython-311.pyc

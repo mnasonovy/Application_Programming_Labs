@@ -77,16 +77,7 @@ def status_review(review: BeautifulSoup) -> str:
     try:
         stars = review.find_all(class_='on')
         count = len(stars)
-        if count == 1:
-            return '1'
-        elif count == 2:
-            return '2'
-        elif count == 3:
-            return '3'
-        elif count == 4:
-            return '4'
-        elif count == 5:
-            return '5'
+        return str(count)
     except Exception as e:
         logging.exception("Ошибка определения статуса отзыва:", e)
 

@@ -1,0 +1,12 @@
+{
+    "directory": "Application Programming",
+    "classes": ["1","2","3","4","5"],
+    "csv": "csv",
+    "mode": "normal",
+    "dataset_main": "Lab1/dataset",
+    "dataset_copy": "Lab2/dataset_copy",
+    "dataset_csv": "Lab2/dataset.csv",
+    "copy_csv": "Lab2/dataset_copy.csv",
+    "random_csv": "dataset_random.csv",
+    "default_number": 10000
+}
