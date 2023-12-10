@@ -2,6 +2,13 @@ import csv
 import os
 import json
 
+"""
+        Инициализирует объект FileIterator для итерации по файлам с заданными параметрами
+
+        Аргументы:
+        - file_paths: Список путей к файлам для итерации
+        - classes: Список классов 
+"""
 class FileIterator:
     def __init__(self, file_paths: list, classes: list):
         self.file_paths = file_paths

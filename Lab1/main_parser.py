@@ -26,8 +26,9 @@ def generate_random_user_agent() -> str:
 # Функция для создания каталогов, если они не существуют
 def create_directories():
     try:
+        base_path = "datasets/dataset"  # Изменили базовый путь
         for folder_name in ["1", "2", "3", "4", "5"]:
-            folder_path = os.path.join("dataset", folder_name)
+            folder_path = os.path.join(base_path, folder_name)
             if not os.path.exists(folder_path):
                 os.makedirs(folder_path)
     except Exception as e:

@@ -4,9 +4,19 @@ import random
 import json
 import csv
 
+"""
+    Создает копию файлов из исходного каталога dataset в каталог dataset_random с переименованием по формату {number}.txt и создает аннотацию в CSV файле
+    
+    Аргументы:
+    - dataset: Путь к исходному каталогу с данными
+    - copy_dataset: Путь к каталогу, в который будут скопированы данные
+    - size: Размер выборки (количество файлов для копирования)
+    - classes: Список классов
+    - csv_file_name: Имя файла CSV, куда будут записаны абсолютные и относительные пути скопированных файлов и номер класса
+    - return: None
+    """
 
 def random_dataset(dataset: str, random_dataset: str, size: int, classes: list, csv_file_name: str) -> None:
-    """Создает папку, где файлы из random_dataset получают случайные имена."""
     rand_list = list(range(size))
     random.shuffle(rand_list)
     random_idx = rand_list
@@ -16,16 +26,22 @@ def random_dataset(dataset: str, random_dataset: str, size: int, classes: list, 
         os.mkdir(random_dataset)
 
     count = 0
+
     for cls in classes:
         files_count = len(os.listdir(os.path.join(dataset, cls)))
         for i in range(files_count):
             source_path = os.path.abspath(os.path.join(dataset, cls, f'{i:04}.txt'))
             target_path = os.path.abspath(os.path.join(random_dataset, f'{random_idx[count]:04}.txt'))
             shutil.copy(source_path, target_path)
+
+            # Получение относительного пути на уровень выше от dataset_random
+            relative_target_path = os.path.relpath(target_path, os.path.join(random_dataset, '..', os.pardir))
+
+
             path_set = [
                 [
-                    target_path.ljust(80),
-                    os.path.basename(target_path).ljust(30),
+                    target_path.ljust(100),  # Абсолютный путь созданного файла в dataset_random
+                    relative_target_path.ljust(50),  # Относительный путь на уровень выше относительно dataset_random
                     cls.ljust(30)
                 ]
             ]
@@ -36,8 +52,8 @@ def random_dataset(dataset: str, random_dataset: str, size: int, classes: list, 
     with open(csv_file_path, 'w', newline='') as csv_file:
         csv_writer = csv.writer(csv_file)
         csv_writer.writerow([
-            'Absolute Path'.ljust(80),
-            'Relative Path'.ljust(30),
+            'Absolute Path'.ljust(100),
+            'Relative Path'.ljust(50),
             'Class'.ljust(30)
         ])
         csv_writer.writerows(path_list)
