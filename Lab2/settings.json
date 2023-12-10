@@ -2,7 +2,7 @@
     "directory": "Application Programming",
     "classes": ["1","2","3","4","5"],
     "csv": "csv",
-    "mode": "normal",
+    "mode": "main",
     "dataset_main": "Lab1/dataset",
     "dataset_copy": "Lab2/dataset_copy",
     "dataset_random": "Lab2/dataset_random",
