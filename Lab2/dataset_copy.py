@@ -2,10 +2,13 @@ import os
 import logging
 import shutil
 import json
-import create_annotation
+import csv
 
-#Копирование файлов из dataset в copy_dataset с переименованием по формату {class}_{number}.txt
-def copy_dataset(dataset: str, copy_dataset: str, classes: list) -> None:
+logging.basicConfig(level=logging.INFO)
+
+
+def copy_dataset(dataset: str, copy_dataset: str, classes: list, csv_file_name: str) -> None:
+    """Копирует файлы из dataset в copy_dataset с переименованием по формату {class}_{number}.txt.."""
     path_list = []
     if not os.path.exists(copy_dataset):
         os.mkdir(copy_dataset)
@@ -18,11 +21,23 @@ def copy_dataset(dataset: str, copy_dataset: str, classes: list) -> None:
                     target_path = os.path.abspath(os.path.join(copy_dataset, f'{cls}_{i+1:04}.txt'))
                     shutil.copy(source_path, target_path)
                     path_set = [
-                        [target_path,
-                         os.path.relpath(target_path, copy_dataset),
-                         cls]
+                        [
+                            target_path.ljust(80),
+                            os.path.basename(target_path).ljust(30),
+                            cls.ljust(30)
+                        ]
                     ]
                     path_list += path_set
+
+        csv_file_path = os.path.join(os.getcwd(), csv_file_name)
+        with open(csv_file_path, 'w', newline='') as csv_file:
+            csv_writer = csv.writer(csv_file)
+            csv_writer.writerow([
+                'Absolute Path'.ljust(80),
+                'Relative Path'.ljust(30),
+                'Class'.ljust(30)
+            ])
+            csv_writer.writerows(path_list)
 
         logging.info(f"Файлы из {dataset} успешно скопированы в {copy_dataset}")
     except Exception as e:
@@ -33,5 +48,4 @@ if __name__ == '__main__':
     with open(os.path.join("Lab2", "settings.json"), "r") as settings_file:
         settings = json.load(settings_file)
 
-    copy_dataset(settings['dataset_main'], settings['dataset_copy'], settings['classes'])
-    create_annotation.create_annotation_file(settings['dataset_main'], settings['copy_csv'])
+    copy_dataset(settings['dataset_main'], settings['dataset_copy'], settings['classes'], settings['copy_csv'])

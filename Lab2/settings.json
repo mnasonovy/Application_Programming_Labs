@@ -5,8 +5,9 @@
     "mode": "normal",
     "dataset_main": "Lab1/dataset",
     "dataset_copy": "Lab2/dataset_copy",
-    "dataset_csv": "Lab2/dataset.csv",
+    "dataset_random": "Lab2/dataset_random",
+    "main_csv": "Lab2/dataset_main.csv",
     "copy_csv": "Lab2/dataset_copy.csv",
-    "random_csv": "dataset_random.csv",
-    "default_number": 10000
+    "random_csv": "Lab2/dataset_random.csv",
+    "default_number": 1000
 }
