@@ -4,14 +4,15 @@ import logging
 from PyQt6.QtWidgets import (
     QWidget, 
     QApplication, QMainWindow, 
-    QLabel, QPushButton, 
-    QVBoxLayout, QFileDialog, 
+    QLabel,QPushButton, 
+    QVBoxLayout,QFileDialog, 
     QMessageBox, QTextBrowser, 
     QComboBox, QInputDialog
-)
+    )
 
 
-sys.path.insert(1, "C:\\Users\\79297\\Desktop\\Application Programming\\Lab2") 
+sys.path.insert(1, "C:\\Users\\79297\\Desktop\\Application Programming\\Lab2")
+from iterators import FileIterator
 from create_annotation import create_annotation_file
 from dataset_random import random_dataset
 from dataset_copy import copy_dataset
@@ -25,7 +26,7 @@ class MainWindow(QMainWindow):
         self.annotation_file_path = ""
         self.randomized_dataset_path = ""
         self.dataset_iterator = None
-        self.classes = ["1", "2", "3", "4", "5"]
+        self.classes = ["bad", "good"]
         self.default_size = 1000
         self.combo = QComboBox(self)
         self.combo.addItems(self.classes)
@@ -37,7 +38,49 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('Dataset Application')
         self.setGeometry(100, 100, 400, 300)
 
-        # Остальной код интерфейса остается без изменений...
+        self.browse_dataset_btn = QPushButton('Select Data Folder', self)
+        self.create_annotation_btn = QPushButton('Create Annotation', self)
+        self.create_random_dataset_btn = QPushButton('Create Random Dataset', self)
+        self.create_copy_dataset_btn = QPushButton('Create Copy Dataset', self)
+        self.next_1_star_btn = QPushButton('Next 1* review', self)
+        self.next_2_star_btn = QPushButton('Next 2* review', self)
+        self.next_3_star_btn = QPushButton('Next 3* review', self)
+        self.next_4_star_btn = QPushButton('Next 4* review', self)
+        self.next_5_star_btn = QPushButton('Next 5* review', self)
+
+        self.browse_dataset_btn.clicked.connect(self.browse_dataset)
+        self.create_annotation_btn.clicked.connect(self.create_annotation)
+        self.create_random_dataset_btn.clicked.connect(lambda: self.create_dataset('random'))
+        self.create_copy_dataset_btn.clicked.connect(lambda: self.create_dataset('copy'))
+        self.next_1_star_btn.clicked.connect(lambda: self.next_star_review(1))
+        self.next_2_star_btn.clicked.connect(lambda: self.next_star_review(2))
+        self.next_3_star_btn.clicked.connect(lambda: self.next_star_review(3))
+        self.next_4_star_btn.clicked.connect(lambda: self.next_star_review(4))
+        self.next_5_star_btn.clicked.connect(lambda: self.next_star_review(5))
+
+        self.txt_file = QLabel(self)
+        self.text_label = QTextBrowser(self)
+        self.text_label.setText("Здесь будет отзыв")
+        self.text_label.setFixedSize(600, 400)
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.browse_dataset_btn)
+        layout.addWidget(self.create_annotation_btn)
+        layout.addWidget(self.create_random_dataset_btn)
+        layout.addWidget(self.create_copy_dataset_btn)
+        layout.addWidget(self.next_1_star_btn)
+        layout.addWidget(self.next_2_star_btn)
+        layout.addWidget(self.next_3_star_btn)
+        layout.addWidget(self.next_4_star_btn)
+        layout.addWidget(self.next_5_star_btn)
+        layout.addWidget(self.txt_file)
+        layout.addWidget(self.text_label)  
+
+        central_widget = QWidget(self)
+        central_widget.setLayout(layout)
+        self.setCentralWidget(central_widget)
+        
+    
 
     def create_annotation(self):
         """Create an annotation file for the selected dataset."""
@@ -50,6 +93,7 @@ class MainWindow(QMainWindow):
                     create_annotation_file(self.dataset_path, self.annotation_file_path)
         except Exception as ex:
             logging.error(f"Failed to create annotation: {ex}\n")
+
 
     def create_dataset(self, dataset_type):
         """Create a dataset based on the given type (copy or random)."""
@@ -90,53 +134,39 @@ class MainWindow(QMainWindow):
                             self.random_dataset_path = dataset_path
                             self.random_annotation_file_path = annotation_file_path
 
+
     def browse_dataset(self):
         """Open dialog to select the data folder."""
         self.dataset_path = QFileDialog.getExistingDirectory(self, "Select Data Folder")
         if self.dataset_path:
-            dataset_iterator = self.get_dataset_files()
-            if dataset_iterator:
-                dataset_files = list(dataset_iterator)
-                self.iter = FileIterator(dataset_files)
+            dataset_files = self.get_dataset_files()
+            # Используем FileIterator для итерации по файлам внутри выбранной папки
+            self.iter = FileIterator(dataset_files)
 
     def get_dataset_files(self):
-        """Generator to enumerate file paths in the dataset."""
-        if self.dataset_path and os.path.exists(self.dataset_path):
+        """Get file paths in the dataset."""
+        dataset_files = []
+        if self.dataset_path:
             for root, dirs, files in os.walk(self.dataset_path):
                 for file in files:
-                    yield os.path.join(root, file)
-        else:
-            QMessageBox.warning(self, "Dataset not selected", "No dataset selected or the selected dataset path does not exist")
+                    file_path = os.path.join(root, file)
+                    dataset_files.append(file_path)
+                    print(file_path)  # Добавьте эту строку для вывода путей файлов
+        return dataset_files
 
-    def next(self, review_type):
-        """Function returns the path to the next element of the class
-        and opens text review in the widget"""
+    def next_star_review(self, stars):
         if self.iter is None:
             QMessageBox.information(None, "File not selected", "No file selected for iteration")
             return
 
-        if review_type == "1":
-            element = self.iter.next_1()
-        elif review_type == "2":
-            element = self.iter.next_2()
-        elif review_type == "3":
-            element = self.iter.next_3()
-        elif review_type == "4":
-            element = self.iter.next_4()
-        elif review_type == "5":
-            element = self.iter.next_5()
-        else:
-            QMessageBox.information(None, "Invalid value", "An invalid value has been selected")
+        element = self.iter.next_star(stars)
+
+        if element is None:
+            QMessageBox.information(None, "End of class", "No more files for this class")
             return
 
         self.review_path = element
 
-        if self.review_path is None:
-            QMessageBox.information(None, "End of class", "No more files for this class")
-            return
-
-        self.text_label.update()
-        
         with open(self.review_path, 'r', encoding='utf-8') as file:
             self.txt_file.setText(self.review_path)
             self.text_label.setText(file.read())
