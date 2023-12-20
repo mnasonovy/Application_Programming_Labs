@@ -1,13 +1,13 @@
 {
-    "directory": "Application Programming",
-    "classes": ["1","2","3","4","5"],
-    "csv": "csv",
-    "mode": "main",
-    "dataset_main": "datasets/dataset",
-    "dataset_copy": "datasets/dataset_copy",
-    "dataset_random": "datasets/dataset_random",
-    "main_csv": "Lab2/dataset_main.csv",
-    "copy_csv": "Lab2/dataset_copy.csv",
-    "random_csv": "Lab2/dataset_random.csv",
-    "default_number": 10000
+    "directory": "Lab2",
+    "classes": ["1", "2", "3", "4", "5"],
+    "csv_folder": "Lab2\\csv",
+    "dataset_folder": "datasets\\dataset",
+    "dataset_copy": "datasets\\dataset_copy",
+    "dataset_random": "datasets\\dataset_random",
+    "mode": "randomize",
+    "dataset_csv": "dataset.csv",
+    "dataset_copy_csv": "dataset_copy.csv",
+    "dataset_random_csv": "dataset_random.csv",
+    "default_size": 10000
 }

@@ -1,11 +1,9 @@
 dataset
 dataset_copy
 dataset_random
-
-
-Lab2/__pycache__/iterators.cpython-311.pyc
-Lab2/__pycache__/dataset_copy.cpython-311.pyc
 Lab2/__pycache__/create_annotation.cpython-311.pyc
-Lab2/__pycache__/dataset_random.cpython-311.pyc
-
 .vscode/settings.json
+Lab2/__pycache__/dataset_copy.cpython-311.pyc
+Lab2/__pycache__/dataset_random.cpython-311.pyc
+Lab2/__pycache__/iterators.cpython-311.pyc
+test

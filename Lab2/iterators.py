@@ -2,44 +2,40 @@ import csv
 import os
 import json
 
-import os
 
-class FileIterator:
-    def __init__(self, file_paths: list):
-        self.file_paths = file_paths
-        self.current_index = 0
+class PathIterator:
+    """This Iterator returns path of the class. When class ends, raises\
+        StopIteration"""
+    def __init__(self, csv_path: str, name_class: str):
+        self.data = list()
+        self.count = 0
+        self.mark = name_class
+        with open(csv_path, 'r') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if self.mark == row[2]:
+                    self.data.append(row[0])
 
     def __iter__(self):
         return self
-    
     def __next__(self) -> str:
-        if self.current_index < len(self.file_paths):
-            current_path = self.file_paths[self.current_index]
-            self.current_index += 1
-            return current_path
+        if self.count < len(self.data):
+            self.count += 1
+            return self.data[self.count-1]
         else:
-            raise StopIteration
+            return None
 
-    def next_star(self, stars: int) -> str:
-        """Returns the next element for the specified star rating"""
-        for idx in range(self.current_index, len(self.file_paths)):
-            path_components = self.file_paths[idx].split(os.path.sep)
-            # Проверяем, содержит ли путь нужное количество звезд в своей структуре
-            if any(f"{stars} star" in component for component in path_components):
-                self.current_index = idx + 1
-                return self.file_paths[idx]
-        return None
+class ClassIterator:
+    def __init__(self, path, cls: list):
+        self.__iters = [PathIterator(path, cls[i]) for i in range(5)]
 
+    def next(self, stars: int):
+        return next(self.__iters[stars])
 
 
 if __name__ == "__main__":
-    with open(os.path.join("Lab2", "settings.json"), "r") as settings_file:
-        settings = json.load(settings_file)
-    
-    file_iterator = FileIterator(
-        file_paths=[os.path.join(settings["directory"], settings["random_csv"])],
-        classes=settings["classes"]  # Передаем список классов целиком
-    )
-
-    for file_path in file_iterator:
-        print(file_path)  # Ваша логика для обработки каждого файла
+    with open(os.path.join("Lab2", "settings.json"), "r") as settings:
+        settings = json.load(settings)
+    iter = ClassIterator(os.path.join(settings["csv_folder"], settings["dataset_csv"]), [settings["classes"][1],settings["classes"][2],settings["classes"][3],settings["classes"][4],settings["classes"][5]])
+    for i in range(5):
+        print(iter.next(5))
