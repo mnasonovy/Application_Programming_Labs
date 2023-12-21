@@ -12,7 +12,7 @@ def make_pathlist(dir: str, classes: list) -> list:
     path_list = list()
     for cls in classes:
         files_count = len(os.listdir(os.path.join(dir, cls)))
-        for i in range(files_count):
+        for i in range(1, files_count+1):
             path_set = [
                 [os.path.abspath(os.path.join(dir, cls, f'{i:04}.txt')),
                  os.path.join(dir, cls, f'{i:04}.txt'),
