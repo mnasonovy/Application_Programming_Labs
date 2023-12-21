@@ -20,3 +20,14 @@ def df_build(csv_path: str) -> pd.DataFrame:
     df['Word count'] = word_count
     return df
 
+def stats_df(df: pd.DataFrame) -> pd.DataFrame:
+    """Returns a pandas dataframe with word count and rating stats from given dataframe"""
+    stats = df[['Rating', 'Word count']].describe()
+    return stats
+
+
+def rating_filter(df: pd.DataFrame, rating: int) -> pd.DataFrame:
+    """Returns a dataframe filtered by reviews' rating"""
+    df['Rating'] = pd.to_numeric(df['Rating'], errors = 'coerce')
+    filtered = df[df['Rating'] == rating].reset_index()
+    return filtered
