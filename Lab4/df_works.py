@@ -1,5 +1,9 @@
 import logging
 import pandas as pd
+from string import punctuation
+from nltk.corpus import stopwords
+from pymystem3 import Mystem
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -20,6 +24,7 @@ def df_build(csv_path: str) -> pd.DataFrame:
     df['Word count'] = word_count
     return df
 
+
 def stats_df(df: pd.DataFrame) -> pd.DataFrame:
     """Returns a pandas dataframe with word count and rating stats from given dataframe"""
     stats = df[['Rating', 'Word count']].describe()
@@ -31,3 +36,15 @@ def rating_filter(df: pd.DataFrame, rating: int) -> pd.DataFrame:
     df['Rating'] = pd.to_numeric(df['Rating'], errors = 'coerce')
     filtered = df[df['Rating'] == rating].reset_index()
     return filtered
+
+
+def word_count_filter(df: pd.DataFrame, word_count: int) -> pd.DataFrame:
+    """Returns a dataframe filtered by word count"""
+    filtered = df[df['Word count'] <= word_count].reset_index()
+    return filtered
+
+
+def rating_group(df: pd.DataFrame) -> pd.DataFrame:
+    """Returns a dataframe grouped by reviews' rating"""
+    grouped_df = df.groupby('Rating').agg({"Word count": ["min", "max", "mean"]})
+    return grouped_df
