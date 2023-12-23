@@ -1,6 +1,6 @@
 {
-    "action": "stats",
+    "action": "hyst",
     "input_csv": "Lab2/csv/dataset.csv",
-    "rating": 1,
+    "rating": 4,
     "word_count": 100
   }
